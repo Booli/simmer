@@ -4,6 +4,8 @@ import AER from './AER';
 import KLD_inventions from './KLD_inventions';
 import AER_inventions from './AER_inventions';
 
+import { fieldSorter } from './helpers';
+
 export function Pack(card_list){
 
   //The pack contents contain cards
@@ -209,11 +211,29 @@ export function Draft(S1, S2, S3, S4, S5) {
   if (args.length !== 5) { console.log("Wrong amount of arguments"); return;}
   let draft = [];
   args.forEach((set) => {
-    draft = draft.concat(Pack(set));
+    draft = [...draft, ...Pack(set)];
   });
   return draft;
 }
 
-export function Draft_AER(){
+export function DraftAER(){
   return Draft(AER, AER, AER, KLD, KLD);
+}
+
+function FieldSort(collection,fields) {
+  let sorted;
+  sorted = collection.sort(fieldSorter([...fields]))
+  return sorted;
+}
+
+export function SortColor(collection){
+  return FieldSort(collection, ["colorsort", "creaturesort", "cmc", "name"])
+}
+
+export function SortCreature(collection){
+  return FieldSort(collection, ["creaturesort", "cmc", "name"])
+}
+
+export function SortRating(collection) { 
+  return FieldSort(collection, ["myrating", "name"])
 }

@@ -3,37 +3,75 @@ import './App.css';
 
 import { Toolbar, NavItem, Space, Container, 
         Footer, Section, SectionHeader,
-        Card, CardImage, Heading, Text } from 'rebass';
+        Card, CardImage, Heading, Text, Circle } from 'rebass';
 import { Grid, Flex } from 'reflexbox';
+import { filterColor } from './Assets/helpers';
 
-import { Draft_AER } from './Assets/draft.js';
+import { DraftAER, SortColor, SortRating } from './Assets/draft';
 
 class MtgCard extends Component {
   render() {
-  console.log(this.props.info.image)
     return (
-      <Card width={223}>
-        <CardImage src={ process.env.PUBLIC_URL + this.props.info.image}/>
-        <Heading>
-        </Heading>
-        <Text>
-        {this.props.info.cmc}
-        </Text>
-      </Card>
+      <div onClick={() => this.props.clickFunction(this.props.card, this.props.index)}>
+        <Card width={223}>
+          <CardImage src={ process.env.PUBLIC_URL + this.props.card.image}/>
+        </Card>
+      </div>
     )
   }
 }
 
 class App extends Component {
-  
   state = {
-    collection: {}
+    collection: {},
+    pool: [],
+    deck: [],
+    unplayable: [],
+    poolcolors: [1,1,0,0,0],
+    deckcolors: [1,1,0,0,0]
   }
 
   componentWillMount() {
-    let collection = Draft_AER();
-    this.setState({collection: collection})
+
+    // check if there is any order in localStorage
+    const localStorageRef = localStorage.getItem(`simmer`);
+    let collection;
+    collection = DraftAER();
+
+    let pool;
+    pool = [...collection];
+
+    this.setState({
+      collection: collection,
+      pool: pool
+    })
   }
+
+
+    addToDeck = (card, index) => {
+      // Add card to the deck stack.
+      let deck = [...this.state.deck];
+      let pool = [...this.state.pool];
+      deck.push(card);
+      pool.splice(index, 1)
+      this.setState({
+        deck:deck,
+        pool:pool
+      })
+    }
+
+    removeFromDeck = (card, index) => {
+    // Add card to the deck stack.
+    let deck = [...this.state.deck];
+    let pool = [...this.state.pool];
+    pool.push(card);
+    deck.splice(index, 1)
+    this.setState({
+      deck:deck,
+      pool:pool
+    })
+  }
+
 
   render() {
     return (
@@ -42,8 +80,7 @@ class App extends Component {
           <Toolbar>
             <NavItem>Simmer</NavItem>
             <Space auto/>
-            <NavItem>Draft</NavItem>
-            <NavItem>Seal</NavItem>
+            <NavItem>New Pool</NavItem>
             <NavItem>About</NavItem>
           </Toolbar>
         </div>
@@ -55,16 +92,47 @@ class App extends Component {
                   description="Cards in pool"
                   heading="Pool Area"
                 />
-                <Flex wrap justify="center">
+                <Toolbar
+                  backgroundColor="white"
+                  color="black"
+                >
+                <Circle 
+                  backgroundColor="Blue"
+                  color="white"
+                >
+                U
+                </Circle>
+                </Toolbar>
+                <Flex wrap justify="center" className="card-area--pool">
                   { 
-                    this.state.collection.map((card, index) => <MtgCard key={index} index={index} info={card}/> )
+                    SortColor(this.state.pool)
+                    .filter((card) => { 
+                      return filterColor(this.state.poolcolors, card.colors)
+                    })
+                    .map((card, index) => <MtgCard key={index} index={index} card={card} clickFunction={this.addToDeck}/>)
                   }
                 </Flex>
               </Section>
             </Container>
           </Grid>
           <Grid col={3}>
-              Deck Area
+            <Container>
+              <Section>
+                <SectionHeader
+                  description="Cards in deck"
+                  heading="Deck Area"
+                />
+                <Flex wrap justify="center" className="card-area--deck">
+                  { 
+                    SortColor(this.state.deck)
+                    .filter((card) => { 
+                      return filterColor(this.state.deckcolors, card.colors)
+                    })
+                    .map((card, index) => <MtgCard key={index} index={index} card={card} clickFunction={this.removeFromDeck}/> )
+                  }
+                </Flex>
+              </Section>
+            </Container>
           </Grid>
         </div>
         <Footer>
