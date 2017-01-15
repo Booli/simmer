@@ -8,6 +8,6 @@ export function fieldSorter(fields) {
 
 export function filterColor(colorsetting, collection) {
   return colorsetting
-    .map((setting, index) => setting & collection[index])
+    .map((setting, index) => setting & Math.round(collection[index]))
     .reduce((a,b) => a | b)
 }
