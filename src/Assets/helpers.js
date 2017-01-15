@@ -6,7 +6,9 @@ export function fieldSorter(fields) {
     }).reduce((p,n) => p ? p : n, 0);
 }
 
-export function filterColor(colorsetting, collection) {
+export function filterColor(colorsetting, collection, showArtifacts = true) {
+  // all 0 -> artifacts
+  if (collection.every((x) => x== 0) && showArtifacts ) { return 1 };
   return colorsetting
     .map((setting, index) => setting & Math.round(collection[index]))
     .reduce((a,b) => a | b)
