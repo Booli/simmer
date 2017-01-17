@@ -11,7 +11,7 @@ export function Pack(card_list){
   //The pack contents contain cards
   let pack_contents=[];
     
-  const PACK_SIZE=15;
+  const PACK_SIZE=14;
 
   //This section lists the number of cards of each rarity and color
   var common=0;

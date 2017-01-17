@@ -6,6 +6,7 @@
     "react-scripts": "0.8.5"
   },
   "dependencies": {
+    "mana-font": "^1.2.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "rebass": "^0.4.0-beta.9",

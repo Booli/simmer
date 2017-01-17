@@ -3,32 +3,22 @@ import './App.css';
 
 import { Toolbar, NavItem, Space, Container, 
         Footer, Section, SectionHeader,
-        Card, CardImage, Heading, Text, Circle } from 'rebass';
+        Heading, Text, Circle } from 'rebass';
 import { Grid, Flex } from 'reflexbox';
 import { filterColor } from './Assets/helpers';
+import MtgCard from './Components/MtgCard';
 
 import { DraftAER, SortColor, SortRating } from './Assets/draft';
 
-class MtgCard extends Component {
-  render() {
-    return (
-      <div onClick={() => this.props.clickFunction(this.props.card, this.props.index)}>
-        <Card width={223}>
-          <CardImage src={ process.env.PUBLIC_URL + this.props.card.image}/>
-        </Card>
-      </div>
-    )
-  }
-}
-
 class App extends Component {
+  // colors: WUBRG, artifacts
   state = {
     collection: {},
     pool: [],
     deck: [],
     unplayable: [],
-    poolcolors: [1,1,0,0,0],
-    deckcolors: [1,1,0,0,0]
+    poolcolors: [1,1,1,1,1,1],
+    deckcolors: [1,1,1,1,1,1]
   }
 
   componentWillMount() {
@@ -48,24 +38,24 @@ class App extends Component {
   }
 
 
-    addToDeck = (card, index) => {
+    addToDeck = (card) => {
       // Add card to the deck stack.
       let deck = [...this.state.deck];
       let pool = [...this.state.pool];
       deck.push(card);
-      pool.splice(index, 1)
+      pool.splice(pool.indexOf(card), 1)
       this.setState({
         deck:deck,
         pool:pool
       })
     }
 
-    removeFromDeck = (card, index) => {
+    removeFromDeck = (card) => {
     // Add card to the deck stack.
     let deck = [...this.state.deck];
     let pool = [...this.state.pool];
     pool.push(card);
-    deck.splice(index, 1)
+    deck.splice(deck.indexOf(card), 1)
     this.setState({
       deck:deck,
       pool:pool
@@ -109,7 +99,7 @@ class App extends Component {
                     .filter((card) => { 
                       return filterColor(this.state.poolcolors, card.colors)
                     })
-                    .map((card, index) => <MtgCard key={index} index={index} card={card} clickFunction={this.addToDeck}/>)
+                    .map((card, index) => <MtgCard key={index} card={card} clickFunction={this.addToDeck}/>)
                   }
                 </Flex>
               </Section>
