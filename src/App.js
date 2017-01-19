@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import './App.css';
+import './css/App.css';
+import './css/mana.css';
 
 import { Toolbar, NavItem, Space, Container, 
         Footer, Section, SectionHeader,
         Heading, Text, Circle } from 'rebass';
 import { Grid, Flex } from 'reflexbox';
-import { filterColor } from './Assets/helpers';
-import MtgCard from './Components/MtgCard';
+import { filterColor } from './assets/helpers';
+import MtgCard from './components/MtgCard';
 
-import { DraftAER, SortColor, SortRating } from './Assets/draft';
+import { DraftAER, SortColor, SortRating } from './assets/draft';
+
 
 class App extends Component {
   // colors: WUBRG, artifacts
@@ -38,19 +40,19 @@ class App extends Component {
   }
 
 
-    addToDeck = (card) => {
-      // Add card to the deck stack.
-      let deck = [...this.state.deck];
-      let pool = [...this.state.pool];
-      deck.push(card);
-      pool.splice(pool.indexOf(card), 1)
-      this.setState({
-        deck:deck,
-        pool:pool
-      })
-    }
+  addToDeck = (card) => {
+    // Add card to the deck stack.
+    let deck = [...this.state.deck];
+    let pool = [...this.state.pool];
+    deck.push(card);
+    pool.splice(pool.indexOf(card), 1)
+    this.setState({
+      deck:deck,
+      pool:pool
+    })
+  }
 
-    removeFromDeck = (card) => {
+  removeFromDeck = (card) => {
     // Add card to the deck stack.
     let deck = [...this.state.deck];
     let pool = [...this.state.pool];
@@ -62,6 +64,15 @@ class App extends Component {
     })
   }
 
+  changeColorFilter = (color, area) => {
+    const color_names = ["white", "blue", "black", "red", "green", "artifacts"];
+    const color_id = color_names.indexOf(color);
+    let colors = this.state[area];
+    colors[color_id] = ~~!colors[color_id];
+    this.setState({
+      [area]: colors
+    })
+  }
 
   render() {
     return (
@@ -86,18 +97,18 @@ class App extends Component {
                   backgroundColor="white"
                   color="black"
                 >
-                <Circle 
-                  backgroundColor="Blue"
-                  color="white"
-                >
-                U
-                </Circle>
+                <i className="ms ms-w ms-cost ms-3x" onClick={() => this.changeColorFilter("white", "poolcolors")}></i>
+                <i className="ms ms-u ms-cost ms-3x" onClick={() => this.changeColorFilter("blue", "poolcolors")}></i>
+                <i className="ms ms-b ms-cost ms-3x" onClick={() => this.changeColorFilter("black", "poolcolors")}></i>
+                <i className="ms ms-r ms-cost ms-3x" onClick={() => this.changeColorFilter("red", "poolcolors")}></i>
+                <i className="ms ms-g ms-cost ms-3x" onClick={() => this.changeColorFilter("green", "poolcolors")}></i>
+                <i className="ms ms-a ms-cost ms-3x" onClick={() => this.changeColorFilter("artifacts", "poolcolors")}></i>
                 </Toolbar>
                 <Flex wrap justify="center" className="card-area--pool">
                   { 
                     SortColor(this.state.pool)
                     .filter((card) => { 
-                      return filterColor(this.state.poolcolors, card.colors)
+                      return filterColor(this.state.poolcolors, card.colorsort)
                     })
                     .map((card, index) => <MtgCard key={index} card={card} clickFunction={this.addToDeck}/>)
                   }
@@ -116,7 +127,7 @@ class App extends Component {
                   { 
                     SortColor(this.state.deck)
                     .filter((card) => { 
-                      return filterColor(this.state.deckcolors, card.colors)
+                      return filterColor(this.state.deckcolors, card.colorsort)
                     })
                     .map((card, index) => <MtgCard key={index} index={index} card={card} clickFunction={this.removeFromDeck}/> )
                   }

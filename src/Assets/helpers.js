@@ -6,10 +6,6 @@ export function fieldSorter(fields) {
     }).reduce((p,n) => p ? p : n, 0);
 }
 
-export function filterColor(colorsetting, collection) {
-  const show_artifacts = colorsetting[-1];
-  if (collection.every((x) => x=== 0) && show_artifacts ) { return 1 };
-  return colorsetting
-    .map((setting, index) => setting & Math.round(collection[index]))
-    .reduce((a,b) => a | b)
+export function filterColor(colorsetting, colorsort) {
+  return colorsetting[colorsort] 
 }
