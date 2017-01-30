@@ -6,10 +6,10 @@ import { Toolbar, NavItem, Space, Container,
         Footer, Section, SectionHeader,
         Heading, Text, Circle } from 'rebass';
 import { Grid, Flex } from 'reflexbox';
-import { filterColor } from './assets/helpers';
-import MtgCard from './components/MtgCard';
+import { filterColor, showCard } from './Assets/helpers';
+import MtgCard from './Components/MtgCard';
 
-import { DraftAER, SortColor, SortRating } from './assets/draft';
+import { DraftAER, SortColor, SortRating } from './Assets/draft';
 
 
 class App extends Component {
@@ -106,11 +106,11 @@ class App extends Component {
                 </Toolbar>
                 <Flex wrap justify="center" className="card-area--pool">
                   { 
-                    SortColor(this.state.pool)
-                    .filter((card) => { 
-                      return filterColor(this.state.poolcolors, card.colorsort)
-                    })
-                    .map((card, index) => <MtgCard key={index} card={card} clickFunction={this.addToDeck}/>)
+                    SortColor(this.state.collection)
+                    .map((card, index) => {
+                      const show = showCard(this.state.pool, this.state.poolcolors, card)
+                      return <MtgCard key={index} showCard={show} card={card} clickFunction={this.addToDeck}/>}
+                      )
                   }
                 </Flex>
               </Section>
@@ -124,13 +124,14 @@ class App extends Component {
                   heading="Deck Area"
                 />
                 <Flex wrap justify="center" className="card-area--deck">
-                  { 
-                    SortColor(this.state.deck)
-                    .filter((card) => { 
-                      return filterColor(this.state.deckcolors, card.colorsort)
-                    })
-                    .map((card, index) => <MtgCard key={index} index={index} card={card} clickFunction={this.removeFromDeck}/> )
-                  }
+                   { 
+                    SortColor(this.state.collection)
+                    .map((card, index) => {
+                      const show = showCard(this.state.deck, this.state.deckcolors, card)
+                      return <MtgCard key={index} showCard={show} card={card} clickFunction={this.removeFromDeck}/>}
+                      )
+                  
+                }
                 </Flex>
               </Section>
             </Container>
