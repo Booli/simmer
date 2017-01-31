@@ -10,12 +10,6 @@ export function filterColor(colorsetting, colorsort) {
   return colorsetting[colorsort] 
 }
 
-export function showCard(area, colorsetting, card){
-  let count = new Map([...new Set(area)].map(
-    x => [x, area.filter(y => y === x).length]
-  ));
-  console.log(count);
-  const in_collection = (area.indexOf(card) > 0 ? 1 : 0)
-  const show = in_collection && filterColor(colorsetting, card.colorsort)
-  return show
+export function showCard(area, card){
+  return (area.indexOf(card) >= 0 ? 1 : 0)
 }

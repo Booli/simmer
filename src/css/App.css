@@ -1,3 +1,20 @@
 .hidden {
-  display: none;
+  display: none!important;
+}
+
+.MtgCard {
+  margin-top: -310px;
+  z-index:2;
+}
+
+.MtgCard:hover {
+  z-index: 999;
+}
+
+.card-area {
+  margin-top: 310px;
+}
+
+.Card:hover {
+  z-index:10;
 }

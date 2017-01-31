@@ -4,12 +4,12 @@ import './css/mana.css';
 
 import { Toolbar, NavItem, Space, Container, 
         Footer, Section, SectionHeader,
-        Heading, Text, Circle } from 'rebass';
+        } from 'rebass';
 import { Grid, Flex } from 'reflexbox';
-import { filterColor, showCard } from './Assets/helpers';
+import { showCard } from './Assets/helpers';
 import MtgCard from './Components/MtgCard';
 
-import { DraftAER, SortColor, SortRating } from './Assets/draft';
+import { DraftAER, SortColor } from './Assets/draft';
 
 
 class App extends Component {
@@ -19,25 +19,37 @@ class App extends Component {
     pool: [],
     deck: [],
     unplayable: [],
-    poolcolors: [1,1,1,1,1,1],
-    deckcolors: [1,1,1,1,1,1]
+    poolcolors: [1,1,1,1,1,1,1],
+    deckcolors: [1,1,1,1,1,1,1]
   }
 
   componentWillMount() {
 
     // check if there is any order in localStorage
-    const localStorageRef = localStorage.getItem(`simmer`);
-    let collection;
-    collection = DraftAER();
+    // const localStorageRef = localStorage.getItem(`simmer`);
+    // if (0) {
+    //   const state = JSON.parse(localStorageRef)
+    //   console.log(state)
+    //   this.setState({
+    //     ...state
+    //   })
+    // } else {
+      let collection;
+      collection = SortColor(DraftAER());
 
-    let pool;
-    pool = [...collection];
+      let pool;
+      pool = [...collection];
 
-    this.setState({
-      collection: collection,
-      pool: pool
-    })
+      this.setState({
+        collection: collection,
+        pool: pool
+      })
+    // }
   }
+  
+  // componentWillUpdate(nextProps, nextState) {
+  //   localStorage.setItem(`simmer`, JSON.stringify(nextState));
+  // }
 
 
   addToDeck = (card) => {
@@ -105,13 +117,22 @@ class App extends Component {
                 <i className="ms ms-a ms-cost ms-3x" onClick={() => this.changeColorFilter("artifacts", "poolcolors")}></i>
                 </Toolbar>
                 <Flex wrap justify="center" className="card-area--pool">
-                  { 
-                    SortColor(this.state.collection)
-                    .map((card, index) => {
-                      const show = showCard(this.state.pool, this.state.poolcolors, card)
-                      return <MtgCard key={index} showCard={show} card={card} clickFunction={this.addToDeck}/>}
-                      )
-                  }
+                {
+                  [...Array(7).keys()]
+                  .map(key => { 
+                    const show = this.state.poolcolors[key] ? '': 'hidden';
+                    return <Grid key={key} className={`card-area ${show}` }>
+                      { 
+                        this.state.collection
+                        .filter(card => parseInt(card.colorsort,10) === key)
+                        .map((card, index) => {
+                          const show = showCard(this.state.pool, card)
+                          return <MtgCard key={index} showCard={show} card={card} clickFunction={this.addToDeck}/>}
+                          )
+                      }
+                    </Grid>
+                  })
+                }
                 </Flex>
               </Section>
             </Container>
@@ -123,15 +144,23 @@ class App extends Component {
                   description="Cards in deck"
                   heading="Deck Area"
                 />
-                <Flex wrap justify="center" className="card-area--deck">
-                   { 
-                    SortColor(this.state.collection)
-                    .map((card, index) => {
-                      const show = showCard(this.state.deck, this.state.deckcolors, card)
-                      return <MtgCard key={index} showCard={show} card={card} clickFunction={this.removeFromDeck}/>}
-                      )
-                  
+                <Flex wrap justify="center" className="card-area card-area--deck">
+                {
+                  [...Array(7).keys()]
+                  .map(key => { 
+                    return <Grid key={key} className={this.state.deckcolors[key] ? '': 'hidden'}>
+                      { 
+                        this.state.collection
+                        .filter(card => parseInt(card.colorsort,10) === key)
+                        .map((card, index) => {
+                          const show = showCard(this.state.deck, card)
+                          return <MtgCard key={index} showCard={show} card={card} clickFunction={this.removeFromDeck}/>}
+                          )
+                      }
+                    </Grid>
+                  })
                 }
+
                 </Flex>
               </Section>
             </Container>

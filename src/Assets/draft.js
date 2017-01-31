@@ -211,7 +211,14 @@ export function Draft(S1, S2, S3, S4, S5) {
   if (args.length !== 5) { console.log("Wrong amount of arguments"); return;}
   let draft = [];
   args.forEach((set) => {
-    draft = [...draft, ...Pack(set)];
+    // So this is a bit of a hack to give each card a collection index
+    // We use this so duplicate cards are not the same reference in the array
+    // It makes our lives a lot easier.
+    let numbered_pack = JSON.parse(JSON.stringify(Pack(set))).map((card, index) => {
+      card.collection_index = draft.length + index;
+      return card;
+    })
+    draft = [...draft, ...numbered_pack];
   });
   return draft;
 }
