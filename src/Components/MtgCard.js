@@ -4,7 +4,7 @@ import { Card, CardImage } from 'rebass';
 const MtgCard = (props) => {
   const show = props.showCard ? '': 'hidden';
   return (
-    <div className={`${show} MtgCard`} onClick={() => props.clickFunction(props.card)}>
+    <div className={`MtgCard ${show}`} onClick={() => props.clickFunction(props.fromStack, props.toStack, props.card)}>
       <Card width={223}>
         <CardImage src={ process.env.PUBLIC_URL + props.card.image}/>
       </Card>

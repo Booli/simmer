@@ -11,5 +11,5 @@ export function filterColor(colorsetting, colorsort) {
 }
 
 export function showCard(area, card){
-  return (area.indexOf(card) >= 0 ? 1 : 0)
+  return (area.indexOf(card.collection_index) >= 0 ? 1 : 0)
 }

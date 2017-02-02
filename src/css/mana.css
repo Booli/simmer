@@ -18,12 +18,14 @@
   display: inline-block;
   font: normal normal normal 14px/1 Mana;
   font-size: inherit;
-  line-height: 1em;
+  line-height: 1.3em;
+  width: 1.3em;
   text-rendering: auto;
   transform: translate(0, 0);
   speak: none;
   text-transform: none;
   vertical-align: middle;
+  text-align: center;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
